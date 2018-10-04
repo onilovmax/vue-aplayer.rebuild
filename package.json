@@ -1,5 +1,5 @@
 {
-  "name": "vue-aplayer",
+  "name": "vue-aplayer.rebuild",
   "version": "1.6.0",
   "description": "Easy-to-use music player for Vue 2.x",
   "main": "dist/vue-aplayer.min.js",
@@ -9,10 +9,10 @@
     "dist/*.js"
   ],
   "scripts": {
-    "start": "npm run dev",
+    "start": "yarn run dev",
     "dev": "webpack-dev-server --inline --hot --progress --colors --host localhost --port 3000 --config webpack.demo.config.js",
-    "build": "export NODE_ENV=production && webpack --progress --hide-modules",
-    "build:demo": "export NODE_ENV=production && webpack --progress --hide-modules --config webpack.demo.config.js",
+    "build": "set NODE_ENV=production && webpack --progress --hide-modules",
+    "build:demo": "set NODE_ENV=production && webpack --progress --hide-modules --config webpack.demo.config.js",
     "prepublishOnly": "yarn run build",
     "predeploy": "yarn add hls.js && yarn run build:demo && echo 'vue-aplayer.js.org' > demo/CNAME",
     "lint": "eslint --ext .js,.vue src",
