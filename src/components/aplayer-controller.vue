@@ -96,7 +96,7 @@
       align-items: center;
       position: relative;
       height: 17px;
-      color: #999;
+      color: #fff;
       font-size: 11px;
       padding-left: 7px;
 
@@ -115,12 +115,12 @@
         }
 
         .aplayer-fill {
-          fill: #666;
+          fill: #fff;
         }
 
         &:hover {
           .aplayer-fill {
-            fill: #000;
+            fill: #9a0000;
           }
         }
 

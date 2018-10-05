@@ -112,7 +112,7 @@
       transition: all 0.1s ease;
 
       .aplayer-fill {
-        fill: transparent;
+        fill: white;
       }
     }
 

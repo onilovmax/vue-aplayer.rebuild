@@ -128,11 +128,11 @@
         }
 
         &:hover {
-          background: #efefef;
+          background: #9a0000;
         }
 
         &.aplayer-list-light {
-          background: #efefef;
+          background: #9a0000;
 
           .aplayer-list-cur {
             display: inline-block;
@@ -149,15 +149,16 @@
           transition: background-color .3s;
         }
         .aplayer-list-index {
-          color: #666;
+          color: #fff;
           margin-right: 12px;
         }
         .aplayer-list-title {
+          color: white;
           flex-grow: 1;
         }
         .aplayer-list-author {
           flex-shrink: 0;
-          color: #666;
+          color: #fff;
           float: right;
         }
       }

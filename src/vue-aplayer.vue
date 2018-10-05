@@ -867,12 +867,13 @@
           padding-bottom: 2px;
 
           .aplayer-title {
+            color: white;
             font-size: 14px;
           }
 
           .aplayer-author {
             font-size: 12px;
-            color: #666;
+            color: #fff;
           }
         }
 
