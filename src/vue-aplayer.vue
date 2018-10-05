@@ -13,7 +13,7 @@
 
     <button class="btn btn-danger" style="padding: 0; margin: 10px;" v-if="!showPlayer && !mini"  @click="displayPlayer(true)">Открыть малый плеер</button>
 
-    <button class="btn btn-danger" style="padding: 0" v-if="showPlayer && mini" @click="displayPlayer(false)">Закрыть</button>
+    <button class="close-button" style="padding: 0" v-if="showPlayer && mini" @click="displayPlayer(false)">Х</button>
     <div class="aplayer-body" v-if="showPlayer && mini || !mini">
       <thumbnail
         :pic="currentMusic.pic"
@@ -820,6 +820,18 @@
 
 <style lang="scss">
   @import "./scss/variables";
+
+  .close-button {
+    background-color: #ffffff6e;
+    border: none;
+    color: white;
+    padding: 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    border-radius: 50%;
+  }
 
   .aplayer {
     font-family: Arial, Helvetica, sans-serif;
