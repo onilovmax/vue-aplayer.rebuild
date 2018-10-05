@@ -11,9 +11,9 @@
     :style="floatStyleObj"
   >
 
-    <div  v-if="showPlayer && mini || !mini">
+    <div v-if="showPlayer && mini || !mini">
     <button class="btn btn-danger" style="padding: 0; margin: 10px;" v-if="!showPlayer && !mini"  @click="displayPlayer(true)">Открыть малый плеер</button>
-      <a href="https://cs-love.net/music.html" class="music-player"><strong>Музыкальный плеер</strong></a>
+      <a v-if="showPlayer && mini" href="https://cs-love.net/music.html" class="music-player"><strong>Музыкальный плеер</strong></a>
     <div class="aplayer-body" v-if="showPlayer && mini || !mini">
       <thumbnail
         :pic="currentMusic.pic"
@@ -51,7 +51,7 @@
       </div>
     </div>
     <audio ref="audio"></audio>
-    <button class="close-button" @click="displayPlayer(false)">Закрыть</button>
+    <button class="close-button"  v-if="showPlayer && mini" @click="displayPlayer(false)">Закрыть</button>
     </div>
     <music-list
       :show="showList && !mini"
