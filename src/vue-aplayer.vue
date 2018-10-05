@@ -10,8 +10,11 @@
     }"
     :style="floatStyleObj"
   >
-    <button v-if="closeButton" @click="closeButton = !closeButton">Закрыть</button>
-    <div class="aplayer-body" v-if="closeButton">
+
+    <button v-if="!showPlayer && canopen"  @click="displayPlayer(true)">Открыть</button>
+
+    <button v-if="showPlayer" @click="displayPlayer(false)">Закрыть</button>
+    <div class="aplayer-body" v-if="showPlayer">
       <thumbnail
         :pic="currentMusic.pic"
         :playing="isPlaying"
@@ -99,16 +102,17 @@
       Lyrics,
     },
     props: {
+      canopen: Boolean,
       music: {
         type: Object,
         required: true,
-        validator(song) {
+        validator (song) {
           return !song.src
         },
       },
       list: {
         type: Array,
-        default() {
+        default () {
           return []
         },
       },
@@ -194,7 +198,7 @@
       volume: {
         type: Number,
         default: 0.8,
-        validator(value) {
+        validator (value) {
           return value >= 0 && value <= 1
         },
       },
@@ -221,9 +225,9 @@
         default: REPEAT.NO_REPEAT,
       },
     },
-    data() {
+    data () {
       return {
-        closeButton: this.mini,
+        showPlayer: localStorage.getItem('showPlayer') == 'true' ? true : false,
         internalMusic: this.music,
         isPlaying: false,
         isSeeking: false,
@@ -274,16 +278,16 @@
     },
     computed: {
       // alias for $refs.audio
-      audio() {
+      audio () {
         return this.$refs.audio
       },
 
       // sync music
       currentMusic: {
-        get() {
+        get () {
           return this.internalMusic
         },
-        set(val) {
+        set (val) {
           canUseSync && this.$emit('update:music', val)
           this.internalMusic = val
         },
@@ -291,20 +295,20 @@
 
       // props wrappers
 
-      currentTheme() {
+      currentTheme () {
         return this.selfAdaptingTheme || this.currentMusic.theme || this.theme
       },
-      isFloatMode() {
+      isFloatMode () {
         return this.float && !this.isMobile
       },
-      shouldAutoplay() {
+      shouldAutoplay () {
         if (this.isMobile) return false
         return this.autoplay
       },
-      musicList() {
+      musicList () {
         return this.list
       },
-      shouldShowNativeControls() {
+      shouldShowNativeControls () {
         return process.env.NODE_ENV !== 'production' &&
           this.controls &&
           !this.mini
@@ -312,14 +316,14 @@
 
       // useful
 
-      floatStyleObj() {
+      floatStyleObj () {
         // transform: translate(floatOffsetLeft, floatOffsetY)
         return {
           transform: `translate(${this.floatOffsetLeft}px, ${this.floatOffsetTop}px)`,
           webkitTransform: `translate(${this.floatOffsetLeft}px, ${this.floatOffsetTop}px)`,
         }
       },
-      currentPicStyleObj() {
+      currentPicStyleObj () {
         if (this.currentMusic && this.currentMusic.pic) {
           return {
             backgroundImage: `url(${this.currentMusic.pic})`,
@@ -327,23 +331,23 @@
         }
         return {}
       },
-      loadProgress() {
+      loadProgress () {
         if (this.playStat.duration === 0) return 0
         return this.playStat.loadedTime / this.playStat.duration
       },
-      playProgress() {
+      playProgress () {
         if (this.playStat.duration === 0) return 0
         return this.playStat.playedTime / this.playStat.duration
       },
       playIndex: {
-        get() {
+        get () {
           return this.shuffledList.indexOf(this.currentMusic)
         },
-        set(val) {
+        set (val) {
           this.currentMusic = this.shuffledList[val % this.shuffledList.length]
         },
       },
-      shouldRepeat() {
+      shouldRepeat () {
         return this.repeatMode !== REPEAT.NO_REPEAT
       },
 
@@ -351,19 +355,19 @@
       // sync muted, volume
 
       isAudioMuted: {
-        get() {
+        get () {
           return this.internalMuted
         },
-        set(val) {
+        set (val) {
           canUseSync && this.$emit('update:muted', val)
           this.internalMuted = val
         },
       },
       audioVolume: {
-        get() {
+        get () {
           return this.internalVolume
         },
-        set(val) {
+        set (val) {
           canUseSync && this.$emit('update:volume', val)
           this.internalVolume = val
         },
@@ -373,16 +377,16 @@
       // since 1.5.0
       // sync shuffle, repeat
       shouldShuffle: {
-        get() {
+        get () {
           return this.internalShuffle
         },
-        set(val) {
+        set (val) {
           canUseSync && this.$emit('update:shuffle', val)
           this.internalShuffle = val
         },
       },
       repeatMode: {
-        get() {
+        get () {
           switch (this.internalRepeat) {
             case REPEAT.NONE:
             case REPEAT.NO_REPEAT:
@@ -394,27 +398,32 @@
               return REPEAT.REPEAT_ALL
           }
         },
-        set(val) {
+        set (val) {
           canUseSync && this.$emit('update:repeat', val)
           this.internalRepeat = val
         },
       },
     },
     methods: {
+      displayPlayer (show) {
+        localStorage.setItem('showPlayer', show);
+        this.showPlayer = localStorage.getItem('showPlayer') == 'true' ? true : false;
+      },
+
       // Float mode
 
-      onDragBegin() {
+      onDragBegin () {
         this.floatOriginX = this.floatOffsetLeft
         this.floatOriginY = this.floatOffsetTop
       },
-      onDragAround({offsetLeft, offsetTop}) {
+      onDragAround ({offsetLeft, offsetTop}) {
         this.floatOffsetLeft = this.floatOriginX + offsetLeft
         this.floatOffsetTop = this.floatOriginY + offsetTop
       },
 
       // functions
 
-      setNextMode() {
+      setNextMode () {
         if (this.repeatMode === REPEAT.REPEAT_ALL) {
           this.repeatMode = REPEAT.REPEAT_ONE
         } else if (this.repeatMode === REPEAT.REPEAT_ONE) {
@@ -423,7 +432,7 @@
           this.repeatMode = REPEAT.REPEAT_ALL
         }
       },
-      thenPlay() {
+      thenPlay () {
         this.$nextTick(() => {
           this.play()
         })
@@ -433,14 +442,14 @@
 
       // play/pause
 
-      toggle() {
+      toggle () {
         if (!this.audio.paused) {
           this.pause()
         } else {
           this.play()
         }
       },
-      play() {
+      play () {
         if (this.mutex) {
           if (activeMutex && activeMutex !== this) {
             activeMutex.pause()
@@ -460,7 +469,7 @@
           })
         }
       },
-      pause() {
+      pause () {
         this.audioPlayPromise
           .then(() => {
             this.audio.pause()
@@ -480,7 +489,7 @@
 
       // progress bar
 
-      onProgressDragBegin(val) {
+      onProgressDragBegin (val) {
         this.wasPlayingBeforeSeeking = this.isPlaying
         this.pause()
         this.isSeeking = true
@@ -490,14 +499,14 @@
           this.audio.currentTime = this.audio.duration * val
         }
       },
-      onProgressDragging(val) {
+      onProgressDragging (val) {
         if (isNaN(this.audio.duration)) {
           this.playStat.playedTime = 0
         } else {
           this.audio.currentTime = this.audio.duration * val
         }
       },
-      onProgressDragEnd(val) {
+      onProgressDragEnd (val) {
         this.isSeeking = false
 
         if (this.wasPlayingBeforeSeeking) {
@@ -507,13 +516,13 @@
 
       // volume
 
-      toggleMute() {
+      toggleMute () {
         this.setAudioMuted(!this.audio.muted)
       },
-      setAudioMuted(val) {
+      setAudioMuted (val) {
         this.audio.muted = val
       },
-      setAudioVolume(val) {
+      setAudioVolume (val) {
         this.audio.volume = val
         if (val > 0) {
           this.setAudioMuted(false)
@@ -522,7 +531,7 @@
 
       // playlist
 
-      getShuffledList() {
+      getShuffledList () {
         if (!this.list.length) {
           return [this.internalMusic]
         }
@@ -559,7 +568,7 @@
         return unshuffled
       },
 
-      onSelectSong(song) {
+      onSelectSong (song) {
         if (this.currentMusic === song) {
           this.toggle()
         } else {
@@ -571,44 +580,44 @@
       // event handlers
       // for keeping up with audio states
 
-      onAudioPlay() {
+      onAudioPlay () {
         this.isPlaying = true
       },
-      onAudioPause() {
+      onAudioPause () {
         this.isPlaying = false
       },
-      onAudioWaiting() {
+      onAudioWaiting () {
         this.isLoading = true
       },
-      onAudioCanplay() {
+      onAudioCanplay () {
         this.isLoading = false
       },
-      onAudioDurationChange() {
+      onAudioDurationChange () {
         if (this.audio.duration !== 1) {
           this.playStat.duration = this.audio.duration
         }
       },
-      onAudioProgress() {
+      onAudioProgress () {
         if (this.audio.buffered.length) {
           this.playStat.loadedTime = this.audio.buffered.end(this.audio.buffered.length - 1)
         } else {
           this.playStat.loadedTime = 0
         }
       },
-      onAudioTimeUpdate() {
+      onAudioTimeUpdate () {
         this.playStat.playedTime = this.audio.currentTime
       },
-      onAudioSeeking() {
+      onAudioSeeking () {
         this.playStat.playedTime = this.audio.currentTime
       },
-      onAudioSeeked() {
+      onAudioSeeked () {
         this.playStat.playedTime = this.audio.currentTime
       },
-      onAudioVolumeChange() {
+      onAudioVolumeChange () {
         this.audioVolume = this.audio.volume
         this.isAudioMuted = this.audio.muted
       },
-      onAudioEnded() {
+      onAudioEnded () {
         // determine next song according to shuffle and repeat
         if (this.repeatMode === REPEAT.REPEAT_ALL) {
           if (this.shouldShuffle && this.playIndex === this.shuffledList.length - 1) {
@@ -628,7 +637,7 @@
         }
       },
 
-      initAudio() {
+      initAudio () {
 
         // since 1.4.0 Audio attributes as props
 
@@ -683,7 +692,7 @@
         }
       },
 
-      setSelfAdaptingTheme() {
+      setSelfAdaptingTheme () {
         // auto theme according to current music cover image
         if ((this.currentMusic.theme || this.theme) === 'pic') {
           const pic = this.currentMusic.pic
@@ -706,12 +715,12 @@
       },
     },
     watch: {
-      music(music) {
+      music (music) {
         this.internalMusic = music
       },
 
       currentMusic: {
-        handler(music) {
+        handler (music) {
           // async
           this.setSelfAdaptingTheme()
 
@@ -748,53 +757,53 @@
       // since 1.4.0
       // observe controls, muted, preload, volume
 
-      shouldShowNativeControls(val) {
+      shouldShowNativeControls (val) {
         this.audio.controls = val
       },
-      isAudioMuted(val) {
+      isAudioMuted (val) {
         this.audio.muted = val
       },
-      preload(val) {
+      preload (val) {
         this.audio.preload = val
       },
-      audioVolume(val) {
+      audioVolume (val) {
         this.audio.volume = val
       },
 
       // sync muted, volume
 
-      muted(val) {
+      muted (val) {
         this.internalMuted = val
       },
-      volume(val) {
+      volume (val) {
         this.internalVolume = val
       },
 
 
       // sync shuffle, repeat
-      shuffle(val) {
+      shuffle (val) {
         this.internalShuffle = val
       },
-      repeat(val) {
+      repeat (val) {
         this.internalRepeat = val
       },
     },
-    beforeCreate() {
+    beforeCreate () {
       if (!VueAPlayer.disableVersionBadge && !versionBadgePrinted) {
         // version badge
         console.log(`\n\n %c Vue-APlayer ${VERSION} %c vue-aplayer.js.org \n`, 'color: #fff; background:#41b883; padding:5px 0;', 'color: #fff; background: #35495e; padding:5px 0;')
         versionBadgePrinted = true
       }
     },
-    created() {
+    created () {
       this.shuffledList = this.getShuffledList()
     },
-    mounted() {
+    mounted () {
       this.initAudio()
       this.setSelfAdaptingTheme()
       if (this.autoplay) this.play()
     },
-    beforeDestroy() {
+    beforeDestroy () {
       if (activeMutex === this) {
         activeMutex = null
       }
