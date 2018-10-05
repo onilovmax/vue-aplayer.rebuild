@@ -128,11 +128,11 @@
         }
 
         &:hover {
-          background: #9a0000;
+          background: #d54e4a;
         }
 
         &.aplayer-list-light {
-          background: #9a0000;
+          background: #d54e4a;
 
           .aplayer-list-cur {
             display: inline-block;

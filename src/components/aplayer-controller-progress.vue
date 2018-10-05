@@ -120,7 +120,7 @@
       position: relative;
       height: 10px;
       width: 100%;
-      background: #9a0000;
+      background: #d54e4a;
 
       .aplayer-loaded {
         position: absolute;

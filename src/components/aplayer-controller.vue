@@ -120,7 +120,7 @@
 
         &:hover {
           .aplayer-fill {
-            fill: #9a0000;
+            fill: #d54e4a;
           }
         }
 

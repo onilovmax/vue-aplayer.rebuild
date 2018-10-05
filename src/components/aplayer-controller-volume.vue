@@ -14,7 +14,7 @@
           class="aplayer-volume"
           :style="{
             height: muted ? 0 : `${Math.trunc(volume * 100)}%`,
-            background: '#9a0000'
+            background: '#d54e4a'
           }"
         >
         </div>
