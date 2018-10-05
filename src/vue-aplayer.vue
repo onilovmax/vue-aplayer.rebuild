@@ -792,7 +792,7 @@
     beforeCreate () {
       if (!VueAPlayer.disableVersionBadge && !versionBadgePrinted) {
         // version badge
-        console.log(`\n\n %c Vue-APlayer ${VERSION} %c vue-aplayer.js.org \n`, 'color: #fff; background:#41b883; padding:5px 0;', 'color: #fff; background: #35495e; padding:5px 0;')
+        console.log(`\n\n %c Vue-APlayer ${VERSION} %c vue-aplayer.js.org \n`, 'color: transparent; background:#41b883; padding:5px 0;', 'color: #fff; background: #35495e; padding:5px 0;')
         versionBadgePrinted = true
       }
     },
@@ -824,7 +824,7 @@
   .aplayer {
     font-family: Arial, Helvetica, sans-serif;
     color: #000;
-    background-color: #fff;
+    background-color: transparent;
     margin: 5px;
     box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.07), 0 1px 5px 0 rgba(0, 0, 0, 0.1);
     border-radius: 2px;

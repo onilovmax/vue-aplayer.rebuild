@@ -156,7 +156,7 @@
           will-change: transform;
           transition: transform 300ms, background-color .3s, border-color .3s;
           border-radius: 50%;
-          background: #fff;
+          background: transparent;
           cursor: pointer;
 
           &:hover {

@@ -112,14 +112,14 @@
       transition: all 0.1s ease;
 
       .aplayer-fill {
-        fill: #fff;
+        fill: transparent;
       }
     }
 
     .aplayer-play {
       width: 26px;
       height: 26px;
-      border: 2px solid #fff;
+      border: 2px solid transparent;
       bottom: 50%;
       right: 50%;
       margin: 0 -15px -15px 0;
@@ -135,7 +135,7 @@
     .aplayer-pause {
       width: 16px;
       height: 16px;
-      border: 2px solid #fff;
+      border: 2px solid transparent;
       bottom: 4px;
       right: 4px;
       .aplayer-icon-pause {
