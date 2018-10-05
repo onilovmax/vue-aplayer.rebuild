@@ -13,7 +13,7 @@
 
     <div  v-if="showPlayer && mini || !mini">
     <button class="btn btn-danger" style="padding: 0; margin: 10px;" v-if="!showPlayer && !mini"  @click="displayPlayer(true)">Открыть малый плеер</button>
-      <a href="https://cs-love.net/music.html" style="color: white; display: table; margin: auto; color: #d54e4a"><strong>Музыкальный плеер</strong></a>
+      <a href="https://cs-love.net/music.html" class="music-player"><strong>Музыкальный плеер</strong></a>
     <div class="aplayer-body" v-if="showPlayer && mini || !mini">
       <thumbnail
         :pic="currentMusic.pic"
@@ -835,11 +835,18 @@
   .close-button {
     background: transparent;
     border: #ff000000;
-    color: #a70000;;
     display: table;
     margin: auto;
+    font-weight: 600;
+    color: #00000082;
   }
 
+  .music-player{
+    color: rgb(3, 3, 3);
+    display: table;
+    text-decoration: underline;
+    margin: 6px auto;
+  }
   .aplayer {
     font-family: Arial, Helvetica, sans-serif;
     color: #000;
