@@ -90,6 +90,9 @@
   .aplayer-pic {
     flex-shrink: 0;
 
+    display: table;
+    margin: auto;
+
     position: relative;
     height: $aplayer-height;
     width: $aplayer-height;

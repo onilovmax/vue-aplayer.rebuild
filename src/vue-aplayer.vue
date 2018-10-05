@@ -11,9 +11,9 @@
     :style="floatStyleObj"
   >
 
+    <div  v-if="showPlayer && mini || !mini">
     <button class="btn btn-danger" style="padding: 0; margin: 10px;" v-if="!showPlayer && !mini"  @click="displayPlayer(true)">Открыть малый плеер</button>
-
-    <button class="close-button" style="padding: 0" v-if="showPlayer && mini" @click="displayPlayer(false)">Х</button>
+    <div style="color: white">Музыкальный плеер</div>
     <div class="aplayer-body" v-if="showPlayer && mini || !mini">
       <thumbnail
         :pic="currentMusic.pic"
@@ -51,6 +51,8 @@
       </div>
     </div>
     <audio ref="audio"></audio>
+    <button class="close-button" @click="displayPlayer(false)">Закрыть</button>
+    </div>
     <music-list
       :show="showList && !mini"
       :current-music="currentMusic"
@@ -822,14 +824,9 @@
   @import "./scss/variables";
 
   .close-button {
-    display: block;
-    height: 20px;
-    width: 20px;
-    border-radius: 50%;
-    border: transparent;
-    background: #ffffff61;
-    color: #d54e4a;
-    font-size: 19px;
+    background: transparent;
+    border: #ff000000;
+    color: white;
   }
 
   .aplayer {
@@ -842,6 +839,7 @@
     overflow: hidden;
     user-select: none;
     line-height: initial;
+
 
     * {
       box-sizing: content-box;
@@ -901,7 +899,11 @@
 
     // Mini mode
     &.aplayer-mini {
-      width: $aplayer-height;
+      width: 147px;
+      border-radius: 24px;
+      background: rgba(255, 255, 255, 0.48);
+      display: table;
+      margin: auto;
     }
 
     &.aplayer-withlrc {
