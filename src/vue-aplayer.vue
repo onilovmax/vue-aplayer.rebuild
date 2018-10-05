@@ -408,9 +408,18 @@
     },
     methods: {
       displayPlayer (show) {
-        localStorage.setItem('showPlayer', show);
-        this.showPlayer = localStorage.getItem('showPlayer') == 'true' ? true : false;
-        this.pause();
+        if(!show){
+          if(confirm('Уверены что хотите закрыть плеер?')){
+            localStorage.setItem('showPlayer', show);
+            this.showPlayer = localStorage.getItem('showPlayer') == 'true' ? true : false;
+            this.pause();
+          }
+        }
+        else {
+          localStorage.setItem('showPlayer', show);
+          this.showPlayer = localStorage.getItem('showPlayer') == 'true' ? true : false;
+          this.pause();
+        }
       },
 
       // Float mode
