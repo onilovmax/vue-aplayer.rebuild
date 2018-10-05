@@ -408,6 +408,7 @@
       displayPlayer (show) {
         localStorage.setItem('showPlayer', show);
         this.showPlayer = localStorage.getItem('showPlayer') == 'true' ? true : false;
+        this.pause();
       },
 
       // Float mode
