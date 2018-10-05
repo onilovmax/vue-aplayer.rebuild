@@ -89,7 +89,6 @@
 
   .aplayer-pic {
     flex-shrink: 0;
-
     display: table;
     margin: auto;
 
