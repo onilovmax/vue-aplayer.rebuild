@@ -11,7 +11,7 @@
     :style="floatStyleObj"
   >
 
-    <button v-if="!showPlayer && canopen"  @click="displayPlayer(true)">Открыть</button>
+    <button v-if="!showPlayer"  @click="displayPlayer(true)">Открыть</button>
 
     <button v-if="showPlayer && mini" @click="displayPlayer(false)">Закрыть</button>
     <div class="aplayer-body" v-if="showPlayer && mini">
