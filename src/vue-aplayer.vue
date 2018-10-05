@@ -11,9 +11,9 @@
     :style="floatStyleObj"
   >
 
-    <div  v-if="showPlayer && mini || !mini">
+    <div  v-if="showPlayer && mini || !mini" style="    cursor: pointer; ">
     <button class="btn btn-danger" style="padding: 0; margin: 10px;" v-if="!showPlayer && !mini"  @click="displayPlayer(true)">Открыть малый плеер</button>
-    <div style="color: white">Музыкальный плеер</div>
+    <div style="color: white; display: table; margin: auto;">Музыкальный плеер</div>
     <div class="aplayer-body" v-if="showPlayer && mini || !mini">
       <thumbnail
         :pic="currentMusic.pic"
@@ -836,6 +836,8 @@
     background: transparent;
     border: #ff000000;
     color: white;
+    display: table;
+    margin: auto;
   }
 
   .aplayer {
@@ -908,7 +910,7 @@
 
     // Mini mode
     &.aplayer-mini {
-      width: 147px;
+      width: 162px;
       border-radius: 24px;
       background: rgba(255, 255, 255, 0.48);
       display: table;
