@@ -822,15 +822,14 @@
   @import "./scss/variables";
 
   .close-button {
-    background-color: #ffffff6e;
-    border: none;
-    color: white;
-    padding: 20px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
+    display: block;
+    height: 20px;
+    width: 20px;
     border-radius: 50%;
+    border: transparent;
+    background: #ffffff61;
+    color: #d54e4a;
+    font-size: 19px;
   }
 
   .aplayer {
