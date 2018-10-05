@@ -118,14 +118,14 @@
 
     .aplayer-bar {
       position: relative;
-      height: 2px;
+      height: 10px;
       width: 100%;
-      background: #cdcdcd;
+      background: #9a0000;
 
       .aplayer-loaded {
         position: absolute;
         left: 0;
-        top: 0;
+        top: 0px;
         bottom: 0;
         background: #aaa;
         height: 2px;
@@ -137,7 +137,7 @@
       .aplayer-played {
         position: absolute;
         left: 0;
-        top: 0;
+        top: 0px;
         bottom: 0;
         height: 2px;
         transition: background-color .3s;
@@ -145,7 +145,7 @@
 
         .aplayer-thumb {
           position: absolute;
-          top: 0;
+          top: 4px;
           right: 5px;
           margin-top: -5px;
           margin-right: -10px;
