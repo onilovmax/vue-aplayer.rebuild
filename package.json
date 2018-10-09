@@ -10,7 +10,7 @@
   ],
   "scripts": {
     "start": "yarn run dev",
-    "dev": "webpack-dev-server --inline --hot --progress --colors --host localhost --port 3001 --config webpack.demo.config.js",
+    "dev": "webpack-dev-server --inline --hot --progress --colors --host localhost --port 3002 --config webpack.demo.config.js",
     "build": "set NODE_ENV=production && webpack --progress --hide-modules",
     "build:demo": "set NODE_ENV=production && webpack --progress --hide-modules --config webpack.demo.config.js",
     "prepublishOnly": "yarn run build",

@@ -12,46 +12,46 @@
   >
 
     <div v-if="showPlayer && mini || !mini">
-    <button class="btn btn-danger" style="margin: 10px auto; display: table;" v-if="!showPlayer && !mini"  @click="displayPlayer(true)">Открыть мини плеер</button>
-      <a v-if="showPlayer && mini" href="https://cs-love.net/music.html" class="music-player"><strong>Музыкальный плеер</strong></a>
-    <div class="aplayer-body" v-if="showPlayer && mini || !mini">
-      <thumbnail
-        :pic="currentMusic.pic"
-        :playing="isPlaying"
-        :enable-drag="isFloatMode"
-        :theme="currentTheme"
-        @toggleplay="toggle"
-        @dragbegin="onDragBegin"
-        @dragging="onDragAround"
-      />
-      <div class="aplayer-info" v-show="!mini">
-        <div class="aplayer-music">
-          <span class="aplayer-title">{{ currentMusic.title || 'Untitled' }}</span>
-          <span class="aplayer-author">{{ currentMusic.artist || 'Unknown' }}</span>
-        </div>
-        <slot name="display" :current-music="currentMusic" :play-stat="playStat">
-          <lyrics :current-music="currentMusic" :play-stat="playStat" v-if="showLrc"/>
-        </slot>
-        <controls
-          :shuffle="shouldShuffle"
-          :repeat="repeatMode"
-          :stat="playStat"
-          :volume="audioVolume"
-          :muted="isAudioMuted"
+      <button class="btn btn-danger" style="margin: 10px auto; display: table;" v-if="!showPlayer && !mini" @click="displayPlayer(true)">Открыть мини плеер</button>
+      <!--<a v-if="showPlayer && mini" href="https://cs-love.net/music.html" class="music-player"><strong>Плеер</strong></a>-->
+      <div class="aplayer-body" v-if="showPlayer && mini || !mini">
+        <thumbnail
+          :pic="currentMusic.pic"
+          :playing="isPlaying"
+          :enable-drag="isFloatMode"
           :theme="currentTheme"
-          @toggleshuffle="shouldShuffle = !shouldShuffle"
-          @togglelist="showList = !showList"
-          @togglemute="toggleMute"
-          @setvolume="setAudioVolume"
-          @dragbegin="onProgressDragBegin"
-          @dragend="onProgressDragEnd"
-          @dragging="onProgressDragging"
-          @nextmode="setNextMode"
+          @toggleplay="toggle"
+          @dragbegin="onDragBegin"
+          @dragging="onDragAround"
         />
+        <div class="aplayer-info" v-show="!mini">
+          <div class="aplayer-music">
+            <span class="aplayer-title">{{ currentMusic.title || 'Untitled' }}</span>
+            <span class="aplayer-author">{{ currentMusic.artist || 'Unknown' }}</span>
+          </div>
+          <slot name="display" :current-music="currentMusic" :play-stat="playStat">
+            <lyrics :current-music="currentMusic" :play-stat="playStat" v-if="showLrc"/>
+          </slot>
+          <controls
+            :shuffle="shouldShuffle"
+            :repeat="repeatMode"
+            :stat="playStat"
+            :volume="audioVolume"
+            :muted="isAudioMuted"
+            :theme="currentTheme"
+            @toggleshuffle="shouldShuffle = !shouldShuffle"
+            @togglelist="showList = !showList"
+            @togglemute="toggleMute"
+            @setvolume="setAudioVolume"
+            @dragbegin="onProgressDragBegin"
+            @dragend="onProgressDragEnd"
+            @dragging="onProgressDragging"
+            @nextmode="setNextMode"
+          />
+        </div>
       </div>
-    </div>
-    <audio ref="audio"></audio>
-    <button class="close-button"  v-if="showPlayer && mini" @click="displayPlayer(false)">Закрыть</button>
+      <audio ref="audio"></audio>
+      <button class="close-button" v-if="showPlayer && mini" @click="displayPlayer(false)">+</button>
     </div>
     <music-list
       :show="showList && !mini"
@@ -408,8 +408,8 @@
     },
     methods: {
       displayPlayer (show) {
-        if(!show){
-          if(confirm('Уверены что хотите закрыть плеер?')){
+        if (!show) {
+          if (confirm('Уверены что хотите закрыть плеер?')) {
             localStorage.setItem('showPlayer', show);
             this.showPlayer = localStorage.getItem('showPlayer') == 'true' ? true : false;
             this.pause();
@@ -841,12 +841,13 @@
     color: #00000082;
   }
 
-  .music-player{
+  .music-player {
     color: rgb(3, 3, 3);
     display: table;
     text-decoration: underline;
     margin: 6px auto;
   }
+
   .aplayer {
     font-family: Arial, Helvetica, sans-serif;
     color: #000;
@@ -915,8 +916,9 @@
 
     // Mini mode
     &.aplayer-mini {
-      width: 195px;
-      border-radius: 24px;
+      width: 92px;
+      border-radius: 50px;
+      border-top-right-radius: 0px;
       background: rgba(255, 255, 255, 0.48);
       display: table;
       margin: auto;
@@ -964,6 +966,37 @@
     }
     100% {
       left: -100%
+    }
+  }
+
+  .aplayer-mini {
+
+    position: fixed;
+    top: 40px;
+    right: 40px;
+    & .aplayer-body{
+      margin: 10px 0;
+    }
+    & > div {
+      position: relative;
+    }
+    & .close-button {
+      position: absolute;
+      right: -3px;
+      top: -12px;
+      color: #fff;
+      font-size: 25px;
+      font-weight: 400;
+      line-height: 15px;
+      padding: 6px;
+      transform: rotate(45deg);
+    }
+    & .close-button:hover,
+    & .close-button:focus {
+      outline: none;
+
+      color: red;
+      cursor: pointer;
     }
   }
 </style>
