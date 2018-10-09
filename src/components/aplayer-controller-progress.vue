@@ -118,8 +118,9 @@
 
     .aplayer-bar {
       position: relative;
-      height: 10px;
+      height: 12px;
       width: 100%;
+      border-radius: 12px;
       background: #d54e4a;
 
       .aplayer-loaded {
@@ -149,8 +150,8 @@
           right: 5px;
           margin-top: -5px;
           margin-right: -10px;
-          width: 10px;
-          height: 10px;
+          width: 12px;
+          height: 12px;
           border: 1px solid;
           transform: scale(.8);
           will-change: transform;
@@ -198,4 +199,27 @@
       transform: rotate(360deg)
     }
   }
+
+  .aplayer-time {
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+  }
+
+  .aplayer-bar-wrap {
+    width: 100%;
+  }
+
+  .aplayer-controller {
+    display: flex;
+    flex-direction: column;
+  }
+  .aplayer-icon {
+    width: 20px;
+    height: 20px;
+  }
+  .aplayer-controller .aplayer-time {
+    height: 40px;
+  }
+
 </style>

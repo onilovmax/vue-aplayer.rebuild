@@ -98,15 +98,15 @@
         bottom: -16px;
         left: 0;
         right: 0;
-        height: 62px;
-        background-color: transparent;
+        height: 68px;
+        background-color: rgba(0, 0, 0, 0.2);
         box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.07), 0 0 5px 0 rgba(0, 0, 0, 0.1);
       }
 
       .aplayer-volume-bar {
         position: absolute;
-        bottom: 0;
-        left: 11px;
+        bottom: 7px;
+        left: 13px;
         width: 5px;
         height: 40px;
         background: #ffffff;
