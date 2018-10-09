@@ -148,10 +148,10 @@
           position: absolute;
           top: 4px;
           right: 5px;
-          margin-top: -5px;
-          margin-right: -10px;
-          width: 12px;
-          height: 12px;
+          margin-top: -7px;
+          margin-right: -15px;
+          width: 16px;
+          height: 16px;
           border: 1px solid;
           transform: scale(.8);
           will-change: transform;

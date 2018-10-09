@@ -99,6 +99,7 @@
       color: #fff;
       font-size: 11px;
       padding-left: 7px;
+      margin-bottom: 6px;
 
       .aplayer-volume-wrap {
         margin-left: 4px;
