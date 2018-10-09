@@ -855,9 +855,8 @@
   }
 
   .music-player {
-    color: rgb (3, 3, 3);
+    color: white;
     display: table;
-    text-decoration: underline;
     margin: 6px auto;
   }
 
@@ -931,7 +930,7 @@
       width: 92px;
       border-radius: 50px;
       border-top-right-radius: 0px;
-      background: rgba (255, 255, 255, 0.48);
+      background: rgba(255, 255, 255, 0.48);
       display: table;
       margin: auto;
     }
@@ -1001,7 +1000,7 @@
       font-weight: 400;
       line-height: 15px;
       padding: 6px;
-      transform: rotate (45deg);
+      transform: rotate(45deg);
     }
     & .close-button:hover,
     & .close-button:focus {
