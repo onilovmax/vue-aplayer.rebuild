@@ -12,7 +12,7 @@
   >
 
     <div v-if="showPlayer && mini || !mini">
-    <button class="btn btn-danger" style="padding: 0; margin: 10px;" v-if="!showPlayer && !mini"  @click="displayPlayer(true)">Открыть малый плеер</button>
+    <button class="btn btn-danger" style="margin: 10px auto; display: table;" v-if="!showPlayer && !mini"  @click="displayPlayer(true)">Открыть мини плеер</button>
       <a v-if="showPlayer && mini" href="https://cs-love.net/music.html" class="music-player"><strong>Музыкальный плеер</strong></a>
     <div class="aplayer-body" v-if="showPlayer && mini || !mini">
       <thumbnail
