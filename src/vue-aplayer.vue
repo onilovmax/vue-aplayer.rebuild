@@ -1,68 +1,77 @@
 <template>
-  <div
-    class="aplayer"
-    :class="{
+    <div
+      class="aplayer"
+      :class="{
       'aplayer-mini': mini,
       'aplayer-withlist' : !mini && musicList.length > 0,
-      'aplayer-withlrc': !mini && (!!$slots.display || showLrc),
+      'aplayer-withlrc': !mini &&  (!!$slots.display || showLrc),
       'aplayer-float': isFloatMode,
       'aplayer-loading': isPlaying && isLoading
     }"
-    :style="floatStyleObj"
-  >
-
-    <div v-if="showPlayer && mini || !mini">
-      <button class="btn btn-danger" style="margin: 10px auto; display: table;" v-if="!showPlayer && !mini" @click="displayPlayer(true)">Открыть мини плеер</button>
-      <!--<a v-if="showPlayer && mini" href="https://cs-love.net/music.html" class="music-player"><strong>Плеер</strong></a>-->
-      <div class="aplayer-body" v-if="showPlayer && mini || !mini">
-        <thumbnail
-          :pic="currentMusic.pic"
-          :playing="isPlaying"
-          :enable-drag="isFloatMode"
-          :theme="currentTheme"
-          @toggleplay="toggle"
-          @dragbegin="onDragBegin"
-          @dragging="onDragAround"
-        />
-        <div class="aplayer-info" v-show="!mini">
-          <div class="aplayer-music">
-            <span class="aplayer-title">{{ currentMusic.title || 'Untitled' }}</span>
-            <span class="aplayer-author">{{ currentMusic.artist || 'Unknown' }}</span>
-          </div>
-          <slot name="display" :current-music="currentMusic" :play-stat="playStat">
-            <lyrics :current-music="currentMusic" :play-stat="playStat" v-if="showLrc"/>
-          </slot>
-          <controls
-            :shuffle="shouldShuffle"
-            :repeat="repeatMode"
-            :stat="playStat"
-            :volume="audioVolume"
-            :muted="isAudioMuted"
+      :style="floatStyleObj"
+    >
+      <div v-if="showPlayer && mini || !mini">
+        <button class="btn btn-danger" style="margin: 10px auto; display: table;" v-if="!showPlayer && !mini" @click="displayPlayer (true)">Открыть мини плеер</button>
+        <!--<a v-if="showPlayer && mini" href="https://cs-love.net/music.html" class="music-player"><strong>Плеер</strong></a>-->
+        <div class="aplayer-body" v-if="showPlayer && mini || !mini">
+          <thumbnail
+            :pic="currentMusic.pic"
+            :playing="isPlaying"
+            :enable-drag="isFloatMode"
             :theme="currentTheme"
-            @toggleshuffle="shouldShuffle = !shouldShuffle"
-            @togglelist="showList = !showList"
+            @toggleplay="toggle"
+            @dragbegin="onDragBegin"
+            @dragging="onDragAround"
+          />
+          <volume-mini
+            v-if="showPlayer && mini"
+            :volume="audioVolume"
+            :theme="currentTheme"
+            :muted="isAudioMuted"
             @togglemute="toggleMute"
             @setvolume="setAudioVolume"
-            @dragbegin="onProgressDragBegin"
-            @dragend="onProgressDragEnd"
-            @dragging="onProgressDragging"
-            @nextmode="setNextMode"
           />
+
+          <div class="aplayer-info" v-show="!mini">
+            <div class="aplayer-music">
+              <span class="aplayer-title">{{ currentMusic.title || 'Untitled' }}</span>
+              <span class="aplayer-author">{{ currentMusic.artist || 'Unknown' }}</span>
+            </div>
+            <slot name="display" :current-music="currentMusic" :play-stat="playStat">
+              <lyrics :current-music="currentMusic" :play-stat="playStat" v-if="showLrc"/>
+            </slot>
+            <controls
+              :shuffle="shouldShuffle"
+              :repeat="repeatMode"
+              :stat="playStat"
+              :volume="audioVolume"
+              :muted="isAudioMuted"
+              :theme="currentTheme"
+              @toggleshuffle="shouldShuffle = !shouldShuffle"
+              @togglelist="showList = !showList"
+              @togglemute="toggleMute"
+              @setvolume="setAudioVolume"
+              @dragbegin="onProgressDragBegin"
+              @dragend="onProgressDragEnd"
+              @dragging="onProgressDragging"
+              @nextmode="setNextMode"
+            />
+          </div>
         </div>
+        <audio ref="audio"></audio>
+        <button class="close-button" v-if="showPlayer && mini" @click="displayPlayer (false)">+</button>
       </div>
-      <audio ref="audio"></audio>
-      <button class="close-button" v-if="showPlayer && mini" @click="displayPlayer(false)">+</button>
+      <music-list
+        :show="showList && !mini"
+        :current-music="currentMusic"
+        :music-list="musicList"
+        :play-index="playIndex"
+        :listmaxheight="listMaxHeight"
+        :theme="currentTheme"
+        @selectsong="onSelectSong"
+      />
+      <a v-if="showPlayer && mini" href="https://cs-love.net/music.html" class="music-player" style="position: absolute; right: 6px;"><strong>Все треки</strong></a>
     </div>
-    <music-list
-      :show="showList && !mini"
-      :current-music="currentMusic"
-      :music-list="musicList"
-      :play-index="playIndex"
-      :listmaxheight="listMaxHeight"
-      :theme="currentTheme"
-      @selectsong="onSelectSong"
-    />
-  </div>
 </template>
 <script type="text/babel">
   import Vue from 'vue'
@@ -70,14 +79,16 @@
   import MusicList from './components/aplayer-list.vue'
   import Controls from './components/aplayer-controller.vue'
   import Lyrics from './components/aplayer-lrc.vue'
+  import VolumeMini from './components/aplayer-controller-volume-mini.vue'
+
   import {deprecatedProp, versionCompare, warn} from './utils'
 
   let versionBadgePrinted = false
-  const canUseSync = versionCompare(Vue.version, '2.3.0') >= 0
+  const canUseSync = versionCompare (Vue.version, '2.3.0') >= 0
 
   /**
    * memorize self-adapting theme for cover image urls
-   * @type {Object.<url, rgb()>}
+   * @type {Object.<url, rgb ()>}
    */
   const picThemeCache = {}
 
@@ -102,6 +113,8 @@
       Controls,
       MusicList,
       Lyrics,
+      VolumeMini,
+
     },
     props: {
       canopen: Boolean,
@@ -229,12 +242,12 @@
     },
     data () {
       return {
-        showPlayer: localStorage.getItem('showPlayer') == 'true' ? true : false,
+        showPlayer: localStorage.getItem ('showPlayer') == 'true' ? true : false,
         internalMusic: this.music,
         isPlaying: false,
         isSeeking: false,
         wasPlayingBeforeSeeking: false,
-        isMobile: /mobile/i.test(window.navigator.userAgent),
+        isMobile: /mobile/i.test (window.navigator.userAgent),
         playStat: {
           duration: 0,
           loadedTime: 0,
@@ -242,9 +255,9 @@
         },
         showList: !this.listFolded,
 
-        // handle Promise returned from audio.play()
+        // handle Promise returned from audio.play ()
         // @see https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/play
-        audioPlayPromise: Promise.resolve(),
+        audioPlayPromise: Promise.resolve (),
 
 
         // @since 1.2.0 float mode
@@ -290,7 +303,7 @@
           return this.internalMusic
         },
         set (val) {
-          canUseSync && this.$emit('update:music', val)
+          canUseSync && this.$emit ('update:music', val)
           this.internalMusic = val
         },
       },
@@ -304,7 +317,7 @@
         return this.float && !this.isMobile
       },
       shouldAutoplay () {
-        if (this.isMobile) return false
+        if  (this.isMobile) return false
         return this.autoplay
       },
       musicList () {
@@ -319,31 +332,31 @@
       // useful
 
       floatStyleObj () {
-        // transform: translate(floatOffsetLeft, floatOffsetY)
+        // transform: translate (floatOffsetLeft, floatOffsetY)
         return {
-          transform: `translate(${this.floatOffsetLeft}px, ${this.floatOffsetTop}px)`,
-          webkitTransform: `translate(${this.floatOffsetLeft}px, ${this.floatOffsetTop}px)`,
+          transform: `translate (${this.floatOffsetLeft}px, ${this.floatOffsetTop}px)`,
+          webkitTransform: `translate (${this.floatOffsetLeft}px, ${this.floatOffsetTop}px)`,
         }
       },
       currentPicStyleObj () {
-        if (this.currentMusic && this.currentMusic.pic) {
+        if  (this.currentMusic && this.currentMusic.pic) {
           return {
-            backgroundImage: `url(${this.currentMusic.pic})`,
+            backgroundImage: `url (${this.currentMusic.pic})`,
           }
         }
         return {}
       },
       loadProgress () {
-        if (this.playStat.duration === 0) return 0
+        if  (this.playStat.duration === 0) return 0
         return this.playStat.loadedTime / this.playStat.duration
       },
       playProgress () {
-        if (this.playStat.duration === 0) return 0
+        if  (this.playStat.duration === 0) return 0
         return this.playStat.playedTime / this.playStat.duration
       },
       playIndex: {
         get () {
-          return this.shuffledList.indexOf(this.currentMusic)
+          return this.shuffledList.indexOf (this.currentMusic)
         },
         set (val) {
           this.currentMusic = this.shuffledList[val % this.shuffledList.length]
@@ -361,7 +374,7 @@
           return this.internalMuted
         },
         set (val) {
-          canUseSync && this.$emit('update:muted', val)
+          canUseSync && this.$emit ('update:muted', val)
           this.internalMuted = val
         },
       },
@@ -370,7 +383,7 @@
           return this.internalVolume
         },
         set (val) {
-          canUseSync && this.$emit('update:volume', val)
+          canUseSync && this.$emit ('update:volume', val)
           this.internalVolume = val
         },
       },
@@ -383,13 +396,13 @@
           return this.internalShuffle
         },
         set (val) {
-          canUseSync && this.$emit('update:shuffle', val)
+          canUseSync && this.$emit ('update:shuffle', val)
           this.internalShuffle = val
         },
       },
       repeatMode: {
         get () {
-          switch (this.internalRepeat) {
+          switch  (this.internalRepeat) {
             case REPEAT.NONE:
             case REPEAT.NO_REPEAT:
               return REPEAT.NO_REPEAT
@@ -401,24 +414,24 @@
           }
         },
         set (val) {
-          canUseSync && this.$emit('update:repeat', val)
+          canUseSync && this.$emit ('update:repeat', val)
           this.internalRepeat = val
         },
       },
     },
     methods: {
       displayPlayer (show) {
-        if (!show) {
-          if (confirm('Уверены что хотите закрыть плеер?')) {
-            localStorage.setItem('showPlayer', show);
-            this.showPlayer = localStorage.getItem('showPlayer') == 'true' ? true : false;
-            this.pause();
+        if  (!show) {
+          if  (confirm ('Уверены что хотите закрыть плеер?')) {
+            localStorage.setItem ('showPlayer', show);
+            this.showPlayer = localStorage.getItem ('showPlayer') == 'true' ? true : false;
+            this.pause ();
           }
         }
         else {
-          localStorage.setItem('showPlayer', show);
-          this.showPlayer = localStorage.getItem('showPlayer') == 'true' ? true : false;
-          this.pause();
+          localStorage.setItem ('showPlayer', show);
+          this.showPlayer = localStorage.getItem ('showPlayer') == 'true' ? true : false;
+          this.pause ();
         }
       },
 
@@ -436,17 +449,17 @@
       // functions
 
       setNextMode () {
-        if (this.repeatMode === REPEAT.REPEAT_ALL) {
+        if  (this.repeatMode === REPEAT.REPEAT_ALL) {
           this.repeatMode = REPEAT.REPEAT_ONE
-        } else if (this.repeatMode === REPEAT.REPEAT_ONE) {
+        } else if  (this.repeatMode === REPEAT.REPEAT_ONE) {
           this.repeatMode = REPEAT.NO_REPEAT
         } else {
           this.repeatMode = REPEAT.REPEAT_ALL
         }
       },
       thenPlay () {
-        this.$nextTick(() => {
-          this.play()
+        this.$nextTick ( () => {
+          this.play ()
         })
       },
 
@@ -455,46 +468,46 @@
       // play/pause
 
       toggle () {
-        if (!this.audio.paused) {
-          this.pause()
+        if  (!this.audio.paused) {
+          this.pause ()
         } else {
-          this.play()
+          this.play ()
         }
       },
       play () {
-        if (this.mutex) {
-          if (activeMutex && activeMutex !== this) {
-            activeMutex.pause()
+        if  (this.mutex) {
+          if  (activeMutex && activeMutex !== this) {
+            activeMutex.pause ()
           }
           activeMutex = this
         }
-        // handle .play() Promise
-        const audioPlayPromise = this.audio.play()
-        if (audioPlayPromise) {
-          return this.audioPlayPromise = new Promise((resolve, reject) => {
-            // rejectPlayPromise is to force reject audioPlayPromise if it's still pending when pause() is called
+        // handle .play () Promise
+        const audioPlayPromise = this.audio.play ()
+        if  (audioPlayPromise) {
+          return this.audioPlayPromise = new Promise ( (resolve, reject) => {
+            // rejectPlayPromise is to force reject audioPlayPromise if it's still pending when pause () is called
             this.rejectPlayPromise = reject
-            audioPlayPromise.then((res) => {
+            audioPlayPromise.then ( (res) => {
               this.rejectPlayPromise = null
-              resolve(res)
-            }).catch(warn)
+              resolve (res)
+            }).catch (warn)
           })
         }
       },
       pause () {
         this.audioPlayPromise
-          .then(() => {
-            this.audio.pause()
+          .then ( () => {
+            this.audio.pause ()
           })
           // Avoid force rejection throws Uncaught
-          .catch(() => {
-            this.audio.pause()
+          .catch ( () => {
+            this.audio.pause ()
           })
 
         // audioPlayPromise is still pending
-        if (this.rejectPlayPromise) {
+        if  (this.rejectPlayPromise) {
           // force reject playPromise
-          this.rejectPlayPromise()
+          this.rejectPlayPromise ()
           this.rejectPlayPromise = null
         }
       },
@@ -503,16 +516,16 @@
 
       onProgressDragBegin (val) {
         this.wasPlayingBeforeSeeking = this.isPlaying
-        this.pause()
+        this.pause ()
         this.isSeeking = true
 
         // handle load failures
-        if (!isNaN(this.audio.duration)) {
+        if  (!isNaN (this.audio.duration)) {
           this.audio.currentTime = this.audio.duration * val
         }
       },
       onProgressDragging (val) {
-        if (isNaN(this.audio.duration)) {
+        if  (isNaN (this.audio.duration)) {
           this.playStat.playedTime = 0
         } else {
           this.audio.currentTime = this.audio.duration * val
@@ -521,40 +534,40 @@
       onProgressDragEnd (val) {
         this.isSeeking = false
 
-        if (this.wasPlayingBeforeSeeking) {
-          this.thenPlay()
+        if  (this.wasPlayingBeforeSeeking) {
+          this.thenPlay ()
         }
       },
 
       // volume
 
       toggleMute () {
-        this.setAudioMuted(!this.audio.muted)
+        this.setAudioMuted (!this.audio.muted)
       },
       setAudioMuted (val) {
         this.audio.muted = val
       },
       setAudioVolume (val) {
         this.audio.volume = val
-        if (val > 0) {
-          this.setAudioMuted(false)
+        if  (val > 0) {
+          this.setAudioMuted (false)
         }
       },
 
       // playlist
 
       getShuffledList () {
-        if (!this.list.length) {
+        if  (!this.list.length) {
           return [this.internalMusic]
         }
         let unshuffled = [...this.list]
-        if (!this.internalShuffle || unshuffled.length <= 1) {
+        if  (!this.internalShuffle || unshuffled.length <= 1) {
           return unshuffled
         }
 
-        let indexOfCurrentMusic = unshuffled.indexOf(this.internalMusic)
-        if (unshuffled.length === 2 && indexOfCurrentMusic !== -1) {
-          if (indexOfCurrentMusic === 0) {
+        let indexOfCurrentMusic = unshuffled.indexOf (this.internalMusic)
+        if  (unshuffled.length === 2 && indexOfCurrentMusic !== -1) {
+          if  (indexOfCurrentMusic === 0) {
             return unshuffled
           } else {
             return [this.internalMusic, unshuffled[0]]
@@ -562,17 +575,17 @@
         }
         // shuffle list
         // @see https://stackoverflow.com/questions/6274339/how-can-i-shuffle-an-array
-        for (let i = unshuffled.length - 1; i > 0; i--) {
-          const j = Math.floor(Math.random() * (i + 1))
+        for  (let i = unshuffled.length - 1; i > 0; i--) {
+          const j = Math.floor (Math.random () *  (i + 1))
           const tmp = unshuffled[i]
           unshuffled[i] = unshuffled[j]
           unshuffled[j] = tmp
         }
 
         // take currentMusic to first
-        if (indexOfCurrentMusic !== -1) {
-          indexOfCurrentMusic = unshuffled.indexOf(this.internalMusic)
-          if (indexOfCurrentMusic !== 0) {
+        if  (indexOfCurrentMusic !== -1) {
+          indexOfCurrentMusic = unshuffled.indexOf (this.internalMusic)
+          if  (indexOfCurrentMusic !== 0) {
             [unshuffled[0], unshuffled[indexOfCurrentMusic]] = [unshuffled[indexOfCurrentMusic], unshuffled[0]]
           }
         }
@@ -581,11 +594,11 @@
       },
 
       onSelectSong (song) {
-        if (this.currentMusic === song) {
-          this.toggle()
+        if  (this.currentMusic === song) {
+          this.toggle ()
         } else {
           this.currentMusic = song
-          this.thenPlay()
+          this.thenPlay ()
         }
       },
 
@@ -605,13 +618,13 @@
         this.isLoading = false
       },
       onAudioDurationChange () {
-        if (this.audio.duration !== 1) {
+        if  (this.audio.duration !== 1) {
           this.playStat.duration = this.audio.duration
         }
       },
       onAudioProgress () {
-        if (this.audio.buffered.length) {
-          this.playStat.loadedTime = this.audio.buffered.end(this.audio.buffered.length - 1)
+        if  (this.audio.buffered.length) {
+          this.playStat.loadedTime = this.audio.buffered.end (this.audio.buffered.length - 1)
         } else {
           this.playStat.loadedTime = 0
         }
@@ -631,19 +644,19 @@
       },
       onAudioEnded () {
         // determine next song according to shuffle and repeat
-        if (this.repeatMode === REPEAT.REPEAT_ALL) {
-          if (this.shouldShuffle && this.playIndex === this.shuffledList.length - 1) {
-            this.shuffledList = this.getShuffledList()
+        if  (this.repeatMode === REPEAT.REPEAT_ALL) {
+          if  (this.shouldShuffle && this.playIndex === this.shuffledList.length - 1) {
+            this.shuffledList = this.getShuffledList ()
           }
           this.playIndex++
-          this.thenPlay()
-        } else if (this.repeatMode === REPEAT.REPEAT_ONE) {
-          this.thenPlay()
+          this.thenPlay ()
+        } else if  (this.repeatMode === REPEAT.REPEAT_ONE) {
+          this.thenPlay ()
         } else {
           this.playIndex++
-          if (this.playIndex !== 0) {
-            this.thenPlay()
-          } else if (this.shuffledList.length === 1) {
+          if  (this.playIndex !== 0) {
+            this.thenPlay ()
+          } else if  (this.shuffledList.length === 1) {
             this.audio.currentTime = 0
           }
         }
@@ -677,48 +690,48 @@
           'volumechange',
           'waiting',
         ]
-        mediaEvents.forEach(event => {
-          this.audio.addEventListener(event, e => this.$emit(event, e))
+        mediaEvents.forEach (event => {
+          this.audio.addEventListener (event, e => this.$emit (event, e))
         })
 
 
         // event handlers
         // they don't emit native media events
 
-        this.audio.addEventListener('play', this.onAudioPlay)
-        this.audio.addEventListener('pause', this.onAudioPause)
-        this.audio.addEventListener('abort', this.onAudioPause)
-        this.audio.addEventListener('waiting', this.onAudioWaiting)
-        this.audio.addEventListener('canplay', this.onAudioCanplay)
-        this.audio.addEventListener('progress', this.onAudioProgress)
-        this.audio.addEventListener('durationchange', this.onAudioDurationChange)
-        this.audio.addEventListener('seeking', this.onAudioSeeking)
-        this.audio.addEventListener('seeked', this.onAudioSeeked)
-        this.audio.addEventListener('timeupdate', this.onAudioTimeUpdate)
-        this.audio.addEventListener('volumechange', this.onAudioVolumeChange)
-        this.audio.addEventListener('ended', this.onAudioEnded)
+        this.audio.addEventListener ('play', this.onAudioPlay)
+        this.audio.addEventListener ('pause', this.onAudioPause)
+        this.audio.addEventListener ('abort', this.onAudioPause)
+        this.audio.addEventListener ('waiting', this.onAudioWaiting)
+        this.audio.addEventListener ('canplay', this.onAudioCanplay)
+        this.audio.addEventListener ('progress', this.onAudioProgress)
+        this.audio.addEventListener ('durationchange', this.onAudioDurationChange)
+        this.audio.addEventListener ('seeking', this.onAudioSeeking)
+        this.audio.addEventListener ('seeked', this.onAudioSeeked)
+        this.audio.addEventListener ('timeupdate', this.onAudioTimeUpdate)
+        this.audio.addEventListener ('volumechange', this.onAudioVolumeChange)
+        this.audio.addEventListener ('ended', this.onAudioEnded)
 
 
-        if (this.currentMusic) {
+        if  (this.currentMusic) {
           this.audio.src = this.currentMusic.src
         }
       },
 
       setSelfAdaptingTheme () {
         // auto theme according to current music cover image
-        if ((this.currentMusic.theme || this.theme) === 'pic') {
+        if  ( (this.currentMusic.theme || this.theme) === 'pic') {
           const pic = this.currentMusic.pic
           // use cache
-          if (picThemeCache[pic]) {
+          if  (picThemeCache[pic]) {
             this.selfAdaptingTheme = picThemeCache[pic]
           } else {
             try {
-              new ColorThief().getColorAsync(pic, ([r, g, b]) => {
-                picThemeCache[pic] = `rgb(${r}, ${g}, ${b})`
-                this.selfAdaptingTheme = `rgb(${r}, ${g}, ${b})`
+              new ColorThief ().getColorAsync (pic,  ([r, g, b]) => {
+                picThemeCache[pic] = `rgb (${r}, ${g}, ${b})`
+                this.selfAdaptingTheme = `rgb (${r}, ${g}, ${b})`
               })
-            } catch (e) {
-              warn('color-thief is required to support self-adapting theme')
+            } catch  (e) {
+              warn ('color-thief is required to support self-adapting theme')
             }
           }
         } else {
@@ -734,28 +747,28 @@
       currentMusic: {
         handler (music) {
           // async
-          this.setSelfAdaptingTheme()
+          this.setSelfAdaptingTheme ()
 
           const src = music.src
           // HLS support
-          if (/\.m3u8(?=(#|\?|$))/.test(src)) {
-            if (this.audio.canPlayType('application/x-mpegURL') || this.audio.canPlayType('application/vnd.apple.mpegURL')) {
+          if  (/\.m3u8 (?= (#|\?|$))/.test (src)) {
+            if  (this.audio.canPlayType ('application/x-mpegURL') || this.audio.canPlayType ('application/vnd.apple.mpegURL')) {
               this.audio.src = src
             } else {
               try {
-                const Hls = require('hls.js')
-                if (Hls.isSupported()) {
-                  if (!this.hls) {
-                    this.hls = new Hls()
+                const Hls = require ('hls.js')
+                if  (Hls.isSupported ()) {
+                  if  (!this.hls) {
+                    this.hls = new Hls ()
                   }
-                  this.hls.loadSource(src)
-                  this.hls.attachMedia(this.audio)
+                  this.hls.loadSource (src)
+                  this.hls.attachMedia (this.audio)
                 } else {
-                  warn('HLS is not supported on your browser')
+                  warn ('HLS is not supported on your browser')
                   this.audio.src = src
                 }
-              } catch (e) {
-                warn('hls.js is required to support m3u8')
+              } catch  (e) {
+                warn ('hls.js is required to support m3u8')
                 this.audio.src = src
               }
             }
@@ -801,26 +814,26 @@
       },
     },
     beforeCreate () {
-      if (!VueAPlayer.disableVersionBadge && !versionBadgePrinted) {
+      if  (!VueAPlayer.disableVersionBadge && !versionBadgePrinted) {
         // version badge
-        console.log(`\n\n %c Vue-APlayer ${VERSION} %c vue-aplayer.js.org \n`, 'color: transparent; background:#41b883; padding:5px 0;', 'color: #fff; background: #35495e; padding:5px 0;')
+        console.log (`\n\n %c Vue-APlayer ${VERSION} %c vue-aplayer.js.org \n`, 'color: transparent; background:#41b883; padding:5px 0;', 'color: #fff; background: #35495e; padding:5px 0;')
         versionBadgePrinted = true
       }
     },
     created () {
-      this.shuffledList = this.getShuffledList()
+      this.shuffledList = this.getShuffledList ()
     },
     mounted () {
-      this.initAudio()
-      this.setSelfAdaptingTheme()
-      if (this.autoplay) this.play()
+      this.initAudio ()
+      this.setSelfAdaptingTheme ()
+      if  (this.autoplay) this.play ()
     },
     beforeDestroy () {
-      if (activeMutex === this) {
+      if  (activeMutex === this) {
         activeMutex = null
       }
-      if (this.hls) {
-        this.hls.destroy()
+      if  (this.hls) {
+        this.hls.destroy ()
       }
     },
   }
@@ -842,7 +855,7 @@
   }
 
   .music-player {
-    color: rgb(3, 3, 3);
+    color: rgb (3, 3, 3);
     display: table;
     text-decoration: underline;
     margin: 6px auto;
@@ -854,7 +867,6 @@
     background-color: transparent;
     margin: 5px;
     border-radius: 2px;
-    overflow: hidden;
     user-select: none;
     line-height: initial;
 
@@ -919,7 +931,7 @@
       width: 92px;
       border-radius: 50px;
       border-top-right-radius: 0px;
-      background: rgba(255, 255, 255, 0.48);
+      background: rgba (255, 255, 255, 0.48);
       display: table;
       margin: auto;
     }
@@ -974,7 +986,7 @@
     position: fixed;
     top: 40px;
     right: 40px;
-    & .aplayer-body{
+    & .aplayer-body {
       margin: 10px 0;
     }
     & > div {
@@ -989,7 +1001,7 @@
       font-weight: 400;
       line-height: 15px;
       padding: 6px;
-      transform: rotate(45deg);
+      transform: rotate (45deg);
     }
     & .close-button:hover,
     & .close-button:focus {
