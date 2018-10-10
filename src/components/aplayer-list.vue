@@ -70,7 +70,7 @@
     },
     created (){
       if(this.musicList.length){
-        this.songPerPages = Math.round(this.musicList.length/this.songsPerPage);
+        this.songPerPages = Math.ceil(this.musicList.length/this.songsPerPage);
         for (let link = 0; link < this.songPerPages; link++) {
           this.listLinks[link] = [];
             for (let song = (link*this.songsPerPage); song < (link*this.songsPerPage + this.songsPerPage); song++) {
