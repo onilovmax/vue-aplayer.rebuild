@@ -25,8 +25,10 @@
       </ol>
     </div>
   </transition>
+    <div style="margin: 20px auto; display: table;">
     <button type="button" v-if="!miniMode && currentLink > 0" @click="prevPage()" class="btn btn-danger" style="margin-right: 5px;">Предыдущая</button>
     <button type="button" v-if="!miniMode && currentLink < songPerPages-1" @click="nextPage()" class="btn btn-danger" style="margin-right: 5px;">Следующая</button>
+    </div>
   </div>
 </template>
 
