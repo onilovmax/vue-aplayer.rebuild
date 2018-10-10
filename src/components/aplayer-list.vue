@@ -77,19 +77,14 @@
               this.listLinks[link].push(this.musicList[song]);
             }
         }
-        console.log(this.listLinks[0]);
       }
     },
     methods:{
       nextPage (){
         this.currentLink++;
-        console.log(this.currentLink);
-        console.log(this.listLinks[this.currentLink]);
       },
       prevPage (){
         this.currentLink--;
-        console.log(this.currentLink);
-        console.log(this.listLinks[this.currentLink]);
       },
     },
     computed: {

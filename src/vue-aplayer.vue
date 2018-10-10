@@ -63,7 +63,7 @@
       </div>
       <music-list
         :miniMode="mini"
-        :songsPerPage="2"
+        :songsPerPage="songsPerPage"
         :show="showList && !mini"
         :current-music="currentMusic"
         :music-list="musicList"
@@ -118,6 +118,10 @@
       VolumeMini,
     },
     props: {
+      songsPerPage:{
+        type: Number,
+        default: 20,
+      },
       canopen: Boolean,
       music: {
         type: Object,

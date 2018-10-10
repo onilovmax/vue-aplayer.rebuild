@@ -32,6 +32,7 @@
       <h3>Featured</h3>
       <aplayer
         autoplay
+        :songsPerPage="10"
         theme="pic"
         shuffle
         repeat="list"
