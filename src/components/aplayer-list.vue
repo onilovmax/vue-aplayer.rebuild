@@ -27,7 +27,7 @@
   </transition>
     <div style="margin: 0px auto; display: table;">
     <button type="button" v-if="!miniMode && currentLink > 0" @click="prevPage()" class="btn btn-danger" style="margin-right: 5px">Предыдущая</button>
-      <button type="button" v-if="!miniMode && songPerPages > 0" v-for="pg in songPerPages" v-bind:key="pg" @click="changePage(pg-1)" class="btn btn-danger" style="margin-right: 5px">{{pg}}</button>
+      <button type="button" v-if="!miniMode && songPerPages > 0" v-for="pg in songPerPages" v-bind:key="pg" @click="changePage(pg-1)" class="btn btn-danger" :disabled="currentLink == pg-1" style="margin-right: 5px">{{pg}}</button>
       <button type="button" v-if="!miniMode && currentLink < songPerPages-1" @click="nextPage()" class="btn btn-danger" style="margin-right: 5px;">Следующая</button>
     </div>
   </div>
