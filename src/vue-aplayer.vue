@@ -893,7 +893,7 @@
 
         text-align: start;
         padding: 14px 7px 0 10px;
-        height: $aplayer-height;
+        height: 90px;
         box-sizing: border-box;
         overflow: hidden;
 
