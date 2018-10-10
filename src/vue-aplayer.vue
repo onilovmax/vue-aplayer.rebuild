@@ -62,6 +62,8 @@
         <button class="close-button" v-if="showPlayer && mini" @click="displayPlayer (false)">+</button>
       </div>
       <music-list
+        :miniMode="mini"
+        :songsPerPage="2"
         :show="showList && !mini"
         :current-music="currentMusic"
         :music-list="musicList"
@@ -114,7 +116,6 @@
       MusicList,
       Lyrics,
       VolumeMini,
-
     },
     props: {
       canopen: Boolean,

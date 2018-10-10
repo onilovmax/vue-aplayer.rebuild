@@ -1,4 +1,5 @@
 <template>
+  <div>
   <transition name="slide-v">
     <div
       class="aplayer-list"
@@ -11,24 +12,35 @@
         :style="listHeightStyle"
       >
         <li
-          v-for="(aMusic, index) of musicList"
+          v-for="(aMusic, index) of listLinks[currentLink]"
           :key="index"
           :class="{'aplayer-list-light': aMusic === currentMusic}"
           @click="$emit('selectsong', aMusic)"
         >
           <span class="aplayer-list-cur" :style="{background: theme}"></span>
-          <span class="aplayer-list-index">{{ index + 1}}</span>
+          <span class="aplayer-list-index">{{(currentLink*songsPerPage) + (index + 1)}}</span>
           <span class="aplayer-list-title">{{ aMusic.title || 'Untitled' }}</span>
           <span class="aplayer-list-author">{{ aMusic.artist || 'Unknown' }}</span>
         </li>
       </ol>
     </div>
   </transition>
+    <button type="button" v-if="!miniMode && currentLink > 0" @click="prevPage()" class="btn btn-danger" style="margin-right: 5px;">Предыдущая</button>
+    <button type="button" v-if="!miniMode && currentLink < songPerPages-1" @click="nextPage()" class="btn btn-danger" style="margin-right: 5px;">Следующая</button>
+  </div>
 </template>
 
 <script>
   export default {
     props: {
+      songsPerPage:{
+        type: Number,
+        default: 0,
+      },
+      miniMode:{
+        type: Boolean,
+        default: false,
+      },
       show: {
         type: Boolean,
         default: true,
@@ -47,10 +59,41 @@
       theme: String,
       listmaxheight: String,
     },
+    data (){
+      return{
+        listLinks: [],
+        currentLink: 0,
+        songPerPages: 0,
+      }
+    },
+    created (){
+      if(this.musicList.length){
+        this.songPerPages = Math.round(this.musicList.length/this.songsPerPage);
+        for (let link = 0; link < this.songPerPages; link++) {
+          this.listLinks[link] = [];
+            for (let song = (link*this.songsPerPage); song < (link*this.songsPerPage + this.songsPerPage); song++) {
+              this.listLinks[link].push(this.musicList[song]);
+            }
+        }
+        console.log(this.listLinks[0]);
+      }
+    },
+    methods:{
+      nextPage (){
+        this.currentLink++;
+        console.log(this.currentLink);
+        console.log(this.listLinks[this.currentLink]);
+      },
+      prevPage (){
+        this.currentLink--;
+        console.log(this.currentLink);
+        console.log(this.listLinks[this.currentLink]);
+      },
+    },
     computed: {
       listHeightStyle () {
         return {
-          height: `${33 * this.musicList.length - 1}px`,
+          height: `${33 * this.songsPerPage + 5}px`,
           maxHeight: this.listmaxheight || ''
         }
       }
