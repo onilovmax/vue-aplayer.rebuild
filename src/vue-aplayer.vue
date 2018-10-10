@@ -943,8 +943,8 @@
     &.aplayer-withlrc {
       .aplayer-body {
         .aplayer-pic {
-          height: $aplayer-height-lrc;
-          width: $aplayer-height-lrc;
+          height: 70px;
+          width: 70px;
         }
 
         .aplayer-info {

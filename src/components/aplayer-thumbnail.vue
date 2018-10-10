@@ -93,8 +93,8 @@
     margin: auto;
 
     position: relative;
-    height: $aplayer-height;
-    width: $aplayer-height;
+    height: 70px;
+    width: 70px;
     background-image: url(../default.jpg);
     background-size: cover;
     transition: all 0.3s ease;
