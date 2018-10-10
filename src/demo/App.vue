@@ -32,7 +32,7 @@
       <h3>Featured</h3>
       <aplayer
         autoplay
-        :songsPerPage="10"
+        :songsPerPage="3"
         theme="pic"
         shuffle
         repeat="list"
@@ -90,41 +90,6 @@
         muted: false,
         music3: null,
         list3: [
-          {
-            title: '前前前世',
-            artist: 'RADWIMPS',
-            src: 'http://0.0.0.0:3000/aplayer/yourname.mp3',
-            pic: 'http://0.0.0.0:3000/aplayer/yourname.jpg',
-            lrc: 'http://0.0.0.0:3000/aplayer/yourname.lrc',
-          },
-          {
-            title: '前前前世',
-            artist: 'RADWIMPS',
-            src: 'http://0.0.0.0:3000/aplayer/yourname.mp3',
-            pic: 'http://0.0.0.0:3000/aplayer/yourname.jpg',
-            lrc: 'http://0.0.0.0:3000/aplayer/yourname.lrc',
-          },
-          {
-            title: '前前前世',
-            artist: 'RADWIMPS',
-            src: 'http://0.0.0.0:3000/aplayer/yourname.mp3',
-            pic: 'http://0.0.0.0:3000/aplayer/yourname.jpg',
-            lrc: 'http://0.0.0.0:3000/aplayer/yourname.lrc',
-          },
-          {
-            title: '前前前世',
-            artist: 'RADWIMPS',
-            src: 'http://0.0.0.0:3000/aplayer/yourname.mp3',
-            pic: 'http://0.0.0.0:3000/aplayer/yourname.jpg',
-            lrc: 'http://0.0.0.0:3000/aplayer/yourname.lrc',
-          },
-          {
-            title: '前前前世',
-            artist: 'RADWIMPS',
-            src: 'http://0.0.0.0:3000/aplayer/yourname.mp3',
-            pic: 'http://0.0.0.0:3000/aplayer/yourname.jpg',
-            lrc: 'http://0.0.0.0:3000/aplayer/yourname.lrc',
-          },
           {
             title: '前前前世',
             artist: 'RADWIMPS',

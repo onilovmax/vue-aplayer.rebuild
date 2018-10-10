@@ -26,8 +26,9 @@
     </div>
   </transition>
     <div style="margin: 0px auto; display: table;">
-    <button type="button" v-if="!miniMode && currentLink > 0" @click="prevPage()" class="btn btn-danger" style="margin-right: 5px;">Предыдущая</button>
-    <button type="button" v-if="!miniMode && currentLink < songPerPages-1" @click="nextPage()" class="btn btn-danger" style="margin-right: 5px;">Следующая</button>
+    <button type="button" v-if="!miniMode && currentLink > 0" @click="prevPage()" class="btn btn-danger" style="margin-right: 5px">Предыдущая</button>
+      <button type="button" v-if="!miniMode && songPerPages > 0" v-for="pg in songPerPages" v-bind:key="pg" @click="changePage(pg-1)" class="btn btn-danger" style="margin-right: 5px">{{pg}}</button>
+      <button type="button" v-if="!miniMode && currentLink < songPerPages-1" @click="nextPage()" class="btn btn-danger" style="margin-right: 5px;">Следующая</button>
     </div>
   </div>
 </template>
@@ -74,12 +75,18 @@
         for (let link = 0; link < this.songPerPages; link++) {
           this.listLinks[link] = [];
             for (let song = (link*this.songsPerPage); song < (link*this.songsPerPage + this.songsPerPage); song++) {
+              if(!this.musicList[song]){
+                break;
+              }
               this.listLinks[link].push(this.musicList[song]);
             }
         }
       }
     },
     methods:{
+      changePage (pg){
+        this.currentLink = pg;
+      },
       nextPage (){
         this.currentLink++;
       },
@@ -90,7 +97,7 @@
     computed: {
       listHeightStyle () {
         return {
-          height: `${33 * this.songsPerPage + 5}px`,
+          height: `${33 * this.listLinks[this.currentLink].length + 5}px`,
           maxHeight: this.listmaxheight || ''
         }
       }
